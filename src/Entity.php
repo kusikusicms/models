@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use KusikusiCMS\Models\Traits\UsesShortId;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use KusikusiCMS\Models\Factories\EntityFactory;
 use KusikusiCMS\Models\Events\{
     EntityCreating,
     EntityCreated,
@@ -26,9 +28,9 @@ use KusikusiCMS\Models\Events\{
 };
 
 
-class Entity extends Model//
+class Entity extends Model
 {
-    use UsesShortId, HasFactory, SoftDeletes;
+    use UsesShortId, SoftDeletes, HasFactory;
 
     /**
      * The table associated with the model.
@@ -36,6 +38,14 @@ class Entity extends Model//
      * @var string
      */
     protected $table = 'entities';
+
+    /**
+     * Create a new factory instance for the Entity model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return EntityFactory::new();
+    }
 
     /**
      * The attributes that are mass assignable.
