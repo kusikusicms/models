@@ -101,4 +101,28 @@ final class EntityTest extends TestCase
         }
         $this->assertDatabaseCount('entities', $total);
     }
+    /**
+     * Testing the scope childrenOf.
+     */
+    public function testScopeChildrenOf(): void
+    {
+        $parentId = 'parentId';
+        $parentEntity = new Entity([
+            'id' => $parentId
+        ]);
+        $this->assertEquals($parentId, $parentEntity->id);
+        $parentEntity->save();
+        $childrenId = ['childrenId3', 'childrenId5', 'childrenId7'];
+        $total = 0;
+        for ($c = 0; $c < count($childrenId); $c++) {
+            Entity::factory()->create(['id' => $childrenId[$c], 'parent_entity_id' => $parentId]);
+        }
+        $scoped = Entity::query()
+            ->childrenOf($parentId)
+            ->get();
+        for ($c = 0; $c < count($childrenId); $c++) {
+            $this->assertEquals($scoped[$c]->id, $childrenId[$c]);
+        }
+        $this->assertDatabaseCount('entities_relations', count($childrenId));
+    }
 }
