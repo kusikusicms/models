@@ -1,0 +1,25 @@
+name: Close Pull Request
+
+# This repository is a read-only split of kusikusicms/monorepo (packages/models).
+on:
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  pull-requests: write
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: superbrothers/close-pull-request@v3
+        with:
+          comment: |
+            Thank you for your pull request. However, this repository is a **read-only split** of the
+            [kusikusicms/monorepo](https://github.com/kusikusicms/monorepo) repository (`packages/models`).
+
+            Please send your pull request to the monorepo instead:
+            https://github.com/kusikusicms/monorepo/pulls
+
+            See [CONTRIBUTING.md](https://github.com/kusikusicms/monorepo/blob/main/CONTRIBUTING.md) for details.

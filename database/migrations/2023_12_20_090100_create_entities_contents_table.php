@@ -5,14 +5,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEntitiesContentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('entities_contents', function (Blueprint $table) {
             $table->id('content_id');
@@ -20,13 +18,15 @@ class CreateEntitiesContentsTable extends Migration
             $table->char('lang', 5)->index();
             $table->string('field', 32)->index();
             $table->text('text')->nullable();
-            $table->timestamps();
+            $table->timestampsTz();
             $table->unique(['entity_id', 'lang', 'field']);
+            // Composite index to speed up whereContent(field, operator, value, lang) lookups
+            $table->index(['field', 'lang'], 'entities_contents_field_lang_index');
             $table->foreign('entity_id')
                 ->references('id')
                 ->on('entities')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
         });
         switch (env('DB_CONNECTION')) {
             case 'mysql':
@@ -37,11 +37,9 @@ class CreateEntitiesContentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('entities_contents');
     }
-}
+};

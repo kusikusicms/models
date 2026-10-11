@@ -2,37 +2,56 @@
 
 namespace KusikusiCMS\Models;
 
+use Composer\InstalledVersions;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\ServiceProvider;
-use KusikusiCMS\Models\Listeners\EntityEventSubscriber;
+use KusikusiCMS\Models\Observers\EntityObserver;
+use KusikusiCMS\Models\Support\IdGenerator;
+use KusikusiCMS\Models\Support\ShortIdGenerator;
 
 class ModelsServiceProvider extends ServiceProvider
 {
     /**
-     * Register application services.
+     * Register services
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/kusikusicms-models.php', 'kusikusicms-models');
-        $this->app->register(EntityEventsServiceProvider::class);
+        $this->mergeConfigFrom(__DIR__.'/../config/models.php', 'kusikusicms.models');
+
+        // Bind the ID generator so tests (and apps) can override it if needed
+        $this->app->singleton(IdGenerator::class, function () {
+            return new ShortIdGenerator;
+        });
     }
 
     /**
-     * Bootstrap package services.
+     * Boots the service by publishing the package's configuration file to the application's configuration path.
      */
     public function boot(): void
     {
-        AboutCommand::add('KusikusiCMS core models package', fn () => ['Version' => '10.0.0-alpha.1']);
-        $this->publishes([__DIR__.'/../config/kusikusicms-models.php' => config_path('kusikusicms-models.php')]);
+        AboutCommand::add('KusikusiCMS core models package', fn () => ['Version' => $this->packageVersion()]);
+        Entity::observe(EntityObserver::class);
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/models.php' => config_path('kusikusicms/models.php'),
+            ], ['kusikusicms-config', 'kusikusicms-models-config']);
+
+            $this->publishes([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'kusikusicms-models-migrations');
+        }
     }
 
     /**
-     * The subscriber classes to register.
-     *
-     * @var array
+     * Resolve the installed package version from Composer, falling back to "dev".
      */
-    protected $subscribe = [
-        EntityEventSubscriber::class,
-    ];
+    protected function packageVersion(): string
+    {
+        if (class_exists(InstalledVersions::class) && InstalledVersions::isInstalled('kusikusicms/models')) {
+            return InstalledVersions::getPrettyVersion('kusikusicms/models') ?? 'dev';
+        }
+
+        return 'dev';
+    }
 }

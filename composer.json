@@ -1,49 +1,39 @@
 {
-    "name": "kusikusicms/models",
-    "description": "Kusikusi CMS Models",
-    "type": "package",
-    "require": {
-        "pugx/shortid-php": "^1.3",
-        "ankurk91/laravel-eloquent-relationships": "^2.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^11.0",
-        "orchestra/testbench": "^9.5.2",
-        "laravel/pint": "^1.18"
-    },
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "KusikusiCMS\\Models\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "KusikusiCMS\\Models\\ModelsServiceProvider"
-            ]
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
-            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
-        }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "@clear",
-            "@prepare"
-        ],
-        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
-        "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "build": "@php vendor/bin/testbench workbench:build --ansi",
-        "serve": [
-            "Composer\\Config::disableProcessTimeout",
-            "@build",
-            "@php vendor/bin/testbench serve"
-        ],
-        "test": "vendor/bin/phpunit"
+  "name": "kusikusicms/models",
+  "description": "Core Eloquent models for KusikusiCMS.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.4",
+    "illuminate/support": "^13.0",
+    "illuminate/database": "^13.0",
+    "pugx/shortid-php": "^1.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "KusikusiCMS\\Models\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "KusikusiCMS\\Models\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "KusikusiCMS\\Models\\ModelsServiceProvider"
+      ]
+    },
+    "branch-alias": {
+      "dev-main": "13.x-dev"
+    }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^11.0",
+    "phpunit/phpunit": "^13.0"
+  },
+  "config": {
+    "sort-packages": true
+  }
 }

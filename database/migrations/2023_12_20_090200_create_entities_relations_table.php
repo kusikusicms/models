@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEntitiesRelationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('entities_relations', function (Blueprint $table) {
             $table->id('relation_id');
@@ -21,28 +19,26 @@ class CreateEntitiesRelationsTable extends Migration
             $table->integer('position')->default(0);
             $table->integer('depth')->unsigned()->default(0)->index('depth');
             $table->json('tags')->nullable();
-            $table->timestamps();
+            $table->timestampsTz();
             $table->foreign('caller_entity_id')
                 ->references('id')
                 ->on('entities')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->foreign('called_entity_id')
                 ->references('id')
                 ->on('entities')
-                ->onDelete('restrict')
-                ->onUpdate('cascade');
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
             $table->unique(['caller_entity_id', 'called_entity_id', 'kind'], 'relation_search');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('entities_relations');
     }
-}
+};
