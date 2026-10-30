@@ -5,7 +5,6 @@ namespace KusikusiCMS\Models;
 use Composer\InstalledVersions;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\ServiceProvider;
-use KusikusiCMS\Models\Observers\EntityObserver;
 use KusikusiCMS\Models\Support\IdGenerator;
 use KusikusiCMS\Models\Support\ShortIdGenerator;
 
@@ -30,7 +29,6 @@ class ModelsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         AboutCommand::add('KusikusiCMS core models package', fn () => ['Version' => $this->packageVersion()]);
-        Entity::observe(EntityObserver::class);
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         if ($this->app->runningInConsole()) {
             $this->publishes([
