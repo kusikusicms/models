@@ -25,10 +25,13 @@ $e->createContents(['title' => 'Hello', 'body' => 'World'], 'en');
 
 ## Scopes (Entity)
 
-### `ofModel(string $model): Builder`
-Filter by model ID string.
+> These filters are methods of `KusikusiCMS\Models\Builders\EntityBuilder` (registered on `Entity` with `#[UseEloquentBuilder]`), not `scopeXxx` model methods. Usage is unchanged. See the "Query builder" section of the package README for how to add or override a filter.
+
+### `ofModel(string|array $model): Builder`
+Filter by model ID string, or by a list of model IDs.
 ```
 Entity::query()->ofModel('Article')->get();
+Entity::query()->ofModel(['Article', 'Page'])->get();
 ```
 
 ### `withContents(?array $options = null): Builder`

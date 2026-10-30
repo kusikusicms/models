@@ -5,6 +5,12 @@ namespace KusikusiCMS\Models;
 use Illuminate\Database\Eloquent\Model;
 use KusikusiCMS\Models\Support\EntityContentsCollection;
 
+/**
+ * @property string $entity_id
+ * @property string $lang
+ * @property string $field
+ * @property string|null $text
+ */
 class EntityContent extends Model
 {
     /**
@@ -49,11 +55,11 @@ class EntityContent extends Model
     /**
      * Create a new Eloquent Collection instance.
      *
-     * @param  array<int, EntityContent>  $contents
+     * @param  array<int, EntityContent>  $models
      * @return EntityContentsCollection<int, Entity>
      */
-    public function newCollection(array $contents = []): EntityContentsCollection
+    public function newCollection(array $models = []): EntityContentsCollection
     {
-        return new EntityContentsCollection($contents);
+        return new EntityContentsCollection($models);
     }
 }

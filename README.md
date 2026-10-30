@@ -89,6 +89,58 @@ Entity::query()->descendantsOf($entityId)->get();
 Entity::query()->siblingsOf($entityId)->get();
 ```
 
+### Query builder
+
+All the filters above are real, typed methods of `KusikusiCMS\Models\Builders\EntityBuilder`, which `Entity` registers with `#[UseEloquentBuilder]`. `Entity::query()` and static calls such as `Entity::childrenOf($id)` return it.
+
+Methods: `currentlyLive`, `ofModel`, `childrenOf`, `parentOf`, `ancestorsOf`, `descendantsOf`, `siblingsOf`, `rootOf`, `relatedBy`, `relating`, `withContents`, `orderByContent`, `whereContent`.
+
+The language used by `withContents()` is kept on the query, so `orderByContent()` and `whereContent()` reuse it for that query only.
+
+#### Add a scope
+A subclass can add its own scopes as usual; they chain after the builder methods and no custom builder is needed:
+```PHP
+class Page extends Entity
+{
+    public function scopePublishedBy(Builder $query, string $author): Builder
+    {
+        return $query->where('props->author', $author);
+    }
+}
+
+Page::query()->childrenOf($id)->publishedBy('ana')->get();
+```
+
+#### Override a built-in filter
+Extend `EntityBuilder` and register it on your subclass:
+```PHP
+class PageBuilder extends EntityBuilder
+{
+    public function childrenOf(string $entityId, ?string $tag = null): static
+    {
+        return parent::childrenOf($entityId, $tag)->where('model', 'page');
+    }
+}
+
+#[UseEloquentBuilder(PageBuilder::class)]
+class Page extends Entity {}
+
+Page::childrenOf($id)->get(); // uses PageBuilder::childrenOf
+```
+You can also return it from `newEloquentBuilder($query)` instead of using the attribute.
+
+Rules:
+- A model-level `scopeChildrenOf()` on a subclass is ignored, because the builder method always wins.
+- A subclass with its own builder must extend `EntityBuilder`.
+
+#### Migration notes
+The filters used to be `scopeXxx()` methods on `Entity`. Fluent calls are unchanged, but:
+- Calling `scopeChildrenOf()` and the like directly no longer works; call the builder method instead.
+- `hasNamedScope('childrenOf')` returns `false` and `->scopes(['childrenOf' => [...]])` is not supported; call the method directly.
+- Custom builders returned by Entity subclasses must extend `EntityBuilder`.
+- `descendantsOf()` is now typed (`array|int` as the second argument).
+- If you use `barryvdh/laravel-ide-helper`, regenerate the helper file.
+
 ### Factory states
 ```PHP
 Entity::factory()->draft()->create();
