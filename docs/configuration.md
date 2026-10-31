@@ -29,8 +29,6 @@ return [
 - `default_language` (string)
   - Default language for content helpers and scopes when none is provided.
 
-- `store_versions` (bool)
-  - Reserved for archives/versioning. Defaults to `true` and may be used by related features.
 
 ## Reading configuration
 

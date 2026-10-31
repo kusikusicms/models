@@ -4,7 +4,6 @@ This package includes the following primary models:
 - `KusikusiCMS\Models\Entity` — main content node. Uses short string IDs and soft deletes.
 - `KusikusiCMS\Models\EntityContent` — localized field/value rows for an entity.
 - `KusikusiCMS\Models\EntityRelation` — graph relations between entities (ancestor/child, etc.).
-- `KusikusiCMS\Models\EntityArchive` — stores versions/archives (reserved for future use).
 
 ## Entity status accessor
 `$entity->status` returns one of: `unknown`, `draft`, `scheduled`, `expired`, `live` based on `published`, `publish_at`, `unpublish_at`.

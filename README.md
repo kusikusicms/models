@@ -5,7 +5,7 @@
 
 This package provides the core Eloquent models and helpers for KusikusiCMS on Laravel, including:
 - `Entity` with short string IDs, lifecycle events, scopes, and content helpers
-- `EntityContent`, `EntityRelation`, and `EntityArchive`
+- `EntityContent` and `EntityRelation`
 - Collections helpers for transforming related contents
 - Factory states for realistic testing/seed data
 
@@ -33,7 +33,6 @@ All keys live under the `kusikusicms.models.*` namespace:
 - `short_id_length` (int, default 10) — length of generated IDs
 - `short_id_max_attempts` (int, default 5) — retries before throwing on collision
 - `default_language` (string, default `en`) — used by content helpers/scopes
-- `store_versions` (bool, default true) — used by archives (reserved for future use)
 
 See docs/configuration.md for details.
 
