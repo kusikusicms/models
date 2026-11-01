@@ -45,6 +45,33 @@ Run migrations as usual:
 php artisan migrate
 ```
 
+## Artisan commands
+
+### `kusikusicms:make:model`
+
+Creates a new entity model in the host app. It asks for the model name, converts it to ProperCase (`blog post` becomes `BlogPost`), and writes `app/Models/{Name}.php` extending `KusikusiCMS\Models\Entity`:
+
+```
+php artisan kusikusicms:make:model
+```
+
+```PHP
+<?php
+
+namespace App\Models;
+
+use KusikusiCMS\Models\Entity;
+
+class BlogPost extends Entity
+{
+
+}
+```
+
+- The command is also available under the alias `k:make:model`.
+- It refuses to overwrite an existing model and creates `app/Models/` if it does not exist yet.
+- It is only registered in console contexts, so it is available to artisan once the package is installed.
+
 ## Quick start
 
 ### Create an entity

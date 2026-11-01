@@ -5,6 +5,7 @@ namespace KusikusiCMS\Models;
 use Composer\InstalledVersions;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\ServiceProvider;
+use KusikusiCMS\Models\Console\MakeModelCommand;
 use KusikusiCMS\Models\Support\IdGenerator;
 use KusikusiCMS\Models\Support\ShortIdGenerator;
 
@@ -31,6 +32,9 @@ class ModelsServiceProvider extends ServiceProvider
         AboutCommand::add('KusikusiCMS core models package', fn () => ['Version' => $this->packageVersion()]);
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeModelCommand::class,
+            ]);
             $this->publishes([
                 __DIR__.'/../config/models.php' => config_path('kusikusicms/models.php'),
             ], ['kusikusicms-config', 'kusikusicms-models-config']);
